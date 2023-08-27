@@ -1,4 +1,4 @@
-import React from 'react';
+import GeneralUserData from './Components/GeneralUserData';
 import logo from './logo.svg';
 import './App.css';
 
@@ -25,7 +25,7 @@ function App() {
       </div>
     </div>
     <div className="grid grid-cols-1 gap-3 w-1/2 mx-auto h-1/2">
-      <div className="text-4xl pt-10">HELLO WORLD</div>
+      <GeneralUserData />
       <div className="block">
       <button className="bg-slate-100 shadow-md px-4 py-3"> Get started</button></div>
     </div>
