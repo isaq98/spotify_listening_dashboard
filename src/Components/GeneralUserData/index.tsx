@@ -1,24 +1,41 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getAccessToken, getUsersTopItems } from '../../Utils/SpotifyAPICalls';
+import { getUsersTopItems } from '../../Utils/SpotifyAPICalls';
 
 function GeneralUserData() {
-   const [accessToken, setAccessToken] = useState<string>('');
+   const [token, setToken] = useState<string | null>('');
+   const [userTopItems, setUserTopItems] = useState<[] | Promise<any>>([]);
 
-    const fetchData = useCallback(async () => {
-        const data = await getAccessToken();
-        setAccessToken(data);
-    }, [])
+   useEffect(() => {
+    const hash = window.location.hash
+    let token = window.localStorage.getItem("token")
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    if (!token && hash) {
+      let temp = hash.substring(1).split("&").find(elem => elem.startsWith("access_token"));
+      if(temp) {
+        token = temp.split("=")[1];
+        window.location.hash = ""
+        window.localStorage.setItem("token", token)
+      }
+    }
+    setToken(token)
+    
+    if(token) {
+        setUserTopItems(getUsersTopItems(token));
+    }
+}, [])
 
-    useEffect(() => {
-        getUsersTopItems(accessToken);
-    }, [accessToken]);
+    const logout = () => {
+        setToken("");
+        window.localStorage.removeItem("token")
+    }
 
     return (
-        <div>Howdy</div>
+        <div>
+            {!token ?
+                <a href='http://localhost:8888'>Login to Spotify</a>
+            : 
+                <button onClick={logout}>Logout</button>}
+        </div>
     )
 }
 
