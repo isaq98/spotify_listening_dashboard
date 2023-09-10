@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { getAccessToken, getUsersTopItems } from '../../Utils/SpotifyAPICalls';
 
 function GeneralUserData() {
-    const [accessToken, setAccessToken] = useState<string>('');
+   const [accessToken, setAccessToken] = useState<string>('');
 
     const fetchData = useCallback(async () => {
         const data = await getAccessToken();
@@ -14,7 +14,7 @@ function GeneralUserData() {
     }, [fetchData]);
 
     useEffect(() => {
-        getUsersTopItems(accessToken)
+        getUsersTopItems(accessToken);
     }, [accessToken]);
 
     return (
