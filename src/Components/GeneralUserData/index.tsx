@@ -1,40 +1,24 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { getUsersTopItems } from '../../Utils/SpotifyAPICalls';
 
-function GeneralUserData() {
-   const [token, setToken] = useState<string | null>('');
-   const [userTopItems, setUserTopItems] = useState<[] | Promise<any>>([]);
+interface GeneralUserDataProps {
+    accessToken: string;
+}
 
-   useEffect(() => {
-    const hash = window.location.hash
-    let token = window.localStorage.getItem("token")
+function GeneralUserData({accessToken}: GeneralUserDataProps) {
+    const [userTopItems, setUserTopItems] = useState<[]>([]);
 
-    if (!token && hash) {
-      let temp = hash.substring(1).split("&").find(elem => elem.startsWith("access_token"));
-      if(temp) {
-        token = temp.split("=")[1];
-        window.location.hash = ""
-        window.localStorage.setItem("token", token)
-      }
-    }
-    setToken(token)
-    
-    if(token) {
-        setUserTopItems(getUsersTopItems(token));
-    }
-}, [])
+    useEffect(() => {
+        getUsersTopItems(accessToken).then((data) => setUserTopItems(data['items']));
+    }, [])
 
-    const logout = () => {
-        setToken("");
-        window.localStorage.removeItem("token")
-    }
+    const renderUserCards = () => {
+        return userTopItems.map((elem) => <li key={elem['name']}>{elem['name']}</li>)
+    };
 
     return (
         <div>
-            {!token ?
-                <a href='http://localhost:8888'>Login to Spotify</a>
-            : 
-                <button onClick={logout}>Logout</button>}
+            {renderUserCards()}
         </div>
     )
 }
